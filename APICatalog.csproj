@@ -17,4 +17,8 @@
     <Folder Include="Controllers/" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".github/pull_request_template.md" />
+  </ItemGroup>
+
 </Project>
