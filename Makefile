@@ -1,63 +1,61 @@
-# Makefile para MinhaAPI
-# Este arquivo facilita a execução de comandos do projeto .NET
+# Makefile for MyAPI
+# This file makes it easier to run .NET project commands
 
-# Comandos principais
+# Main commands
 .PHONY: run build clean restore test watch help
 
-# Executa o projeto
+# Runs the project
 run:
-	dotnet run &
-	sleep 3
-	xdg-open http://localhost:5224/swagger
+    dotnet run
 
-# Compila o projeto
+# Builds the project
 build:
-	dotnet build
+    dotnet build
 
-# Limpa os arquivos de build
+# Cleans build files
 clean:
-	dotnet clean
+    dotnet clean
 
-# Restaura as dependências
+# Restores dependencies
 restore:
-	dotnet restore
+    dotnet restore
 
-# Executa os testes (se existirem)
+# Runs tests (if any)
 test:
-	dotnet test
+    dotnet test
 
-# Executa o projeto em modo watch (recompila automaticamente quando há mudanças)
+# Runs the project in watch mode (automatically recompiles on changes)
 watch:
-	dotnet watch run
+    dotnet watch run
 
-# Para processos que possam estar usando a porta padrão
+# Stops processes that may be using the default port
 kill-port:
-	@echo "Parando processos na porta 5224..."
-	@lsof -ti:5224 | xargs -r kill
-	@echo "Processos parados."
+    @echo "Stopping processes on port 5101..."
+    @lsof -ti:5101 | xargs -r kill
+    @echo "Processes stopped."
 
-# Mostra informações sobre o projeto
+# Shows project information
 info:
-	dotnet --info
+    dotnet --info
 
-# Lista os packages instalados
+# Lists installed packages
 list-packages:
-	dotnet list package
+    dotnet list package
 
-# Ajuda - mostra os comandos disponíveis
+# Help - shows available commands
 help:
-	@echo "Comandos disponíveis:"
-	@echo "  make run          - Executa o projeto"
-	@echo "  make build        - Compila o projeto"
-	@echo "  make clean        - Limpa os arquivos de build"
-	@echo "  make restore      - Restaura as dependências"
-	@echo "  make test         - Executa os testes"
-	@echo "  make watch        - Executa em modo watch"
-	@echo "  make run-port     - Executa na porta 5000"
-	@echo "  make kill-port    - Para processos na porta 5224"
-	@echo "  make info         - Mostra informações do .NET"
-	@echo "  make list-packages- Lista packages instalados"
-	@echo "  make help         - Mostra esta ajuda"
+    @echo "Available commands:"
+    @echo "  make run           - Runs the project"
+    @echo "  make build         - Builds the project"
+    @echo "  make clean         - Cleans build files"
+    @echo "  make restore       - Restores dependencies"
+    @echo "  make test          - Runs tests"
+    @echo "  make watch         - Runs in watch mode"
+    @echo "  make run-port      - Runs on port 5000"
+    @echo "  make kill-port     - Stops processes on port 5101"
+    @echo "  make info          - Shows .NET information"
+    @echo "  make list-packages - Lists installed packages"
+    @echo "  make help          - Shows this help"
 
-# Comando padrão quando apenas 'make' é executado
-.DEFAULT_GOAL := help
+# Default command when only 'make' is executed
+.DEFAULT_GOAL :=
