@@ -28,6 +28,18 @@ restore:
 test:
 	dotnet test
 
+# Create migrations script
+add-migration:
+	dotnet ef migrations add ${name}
+
+# Remove created script
+remove-migration:
+	dotnet ef migrations remove
+
+# Applies migrations to the database
+update-database:
+	dotnet ef database update
+
 # Stops processes that may be using the default port
 kill-port:
 	@echo "Stopping processes on port 5101..."
