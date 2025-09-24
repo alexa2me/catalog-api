@@ -34,7 +34,7 @@ add-migration:
 
 # Remove created script
 remove-migration:
-	dotnet ef migrations remove ${name}
+	dotnet ef migrations remove
 
 # Applies migrations to the database
 update-database:
