@@ -1,4 +1,5 @@
 using APICatalog.Context;
+
 using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.Load();
