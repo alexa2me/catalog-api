@@ -1,5 +1,6 @@
 using APICatalog.Context;
 using APICatalog.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,17 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> Get()
+        public ActionResult<IEnumerable<Product>> Get(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var products = _context.Products.ToList();
-            if (products is null || products.Count == 0)
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var productsQuery = _context.Products.AsQueryable();
+            var products = productsQuery.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            if (products == null || products.Count == 0)
             {
                 return NotFound();
             }
@@ -38,7 +46,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(Product product)
+        public ActionResult Post([FromBody] Product product)
         {
             if (product is null)
             {
@@ -53,11 +61,20 @@ namespace APICatalog.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult Put(int id, Product product)
+        public ActionResult Put(int id, [FromBody] Product product)
         {
             if (id != product.Id)
             {
                 return BadRequest();
+            }
+
+            var existingProduct = _context.Products
+                .AsNoTracking()
+                .FirstOrDefault(p => p.Id == id);
+
+            if (existingProduct is null)
+            {
+                return NotFound("Product not found...");
             }
 
             _context.Entry(product).State = EntityState.Modified;
