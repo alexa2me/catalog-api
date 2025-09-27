@@ -21,17 +21,15 @@ namespace APICatalog.Controllers
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {
+            const int maxPageSize = 35;
             if (pageNumber <= 0) pageNumber = 1;
             if (pageSize <= 0) pageSize = 10;
+            if (pageSize > maxPageSize) pageSize = maxPageSize;
 
             var productsQuery = _context.Products.AsQueryable();
             var products = productsQuery.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            if (products == null || products.Count == 0)
-            {
-                return NotFound();
-            }
-            return products;
+            return Ok(products);
         }
 
         [HttpGet("{id:int}", Name = "GetProduct")]
@@ -53,28 +51,35 @@ namespace APICatalog.Controllers
                 return BadRequest("Invalid product data.");
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Products.Add(product); // Include the new product in the context
             _context.SaveChanges(); // Save changes to the database
 
             return new CreatedAtRouteResult("GetProduct",
-            new { id = product.Id }, product);
+                new { id = product.Id }, product);
         }
 
         [HttpPut("{id:int}")]
         public ActionResult Put(int id, [FromBody] Product product)
         {
-            if (id != product.Id)
+            if (product is null)
             {
-                return BadRequest();
+                return BadRequest("Invalid product data.");
             }
 
-            var existingProduct = _context.Products
-                .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
-
-            if (existingProduct is null)
+            if (id != product.Id)
             {
-                return NotFound("Product not found...");
+                return BadRequest("Product ID mismatch.");
+            }
+
+            bool exists = _context.Products.Any(p => p.Id == id);
+            if (!exists)
+            {
+                return NotFound("Product not found.");
             }
 
             _context.Entry(product).State = EntityState.Modified;
