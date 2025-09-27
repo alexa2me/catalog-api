@@ -22,6 +22,7 @@ namespace APICatalog.Controllers
         {
             return _context.Categories
                 .Include(p => p.Products)
+                .AsNoTracking()
                 .ToList();
         }
 
@@ -35,7 +36,7 @@ namespace APICatalog.Controllers
             if (pageSize <= 0) pageSize = 10;
             if (pageSize > maxPageSize) pageSize = maxPageSize;
 
-            var categoriesQuery = _context.Categories.AsQueryable();
+            var categoriesQuery = _context.Categories.AsNoTracking();
             var categories = categoriesQuery
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
