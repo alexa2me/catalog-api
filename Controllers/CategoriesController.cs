@@ -1,0 +1,125 @@
+using APICatalog.Context;
+using APICatalog.Models;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace APICatalog.Controllers
+{
+    [Route("[controller]")]
+    [ApiController]
+    public class CategoriesController : ControllerBase
+    {
+        private readonly AppDbContext _context;
+
+        public CategoriesController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet("products")]
+        public ActionResult<IEnumerable<Category>> GetProductsCategories()
+        {
+            return _context.Categories
+                .Include(p => p.Products)
+                .ToList();
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<Category>> Get(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            const int maxPageSize = 35;
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+            if (pageSize > maxPageSize) pageSize = maxPageSize;
+
+            var categoriesQuery = _context.Categories.AsQueryable();
+            var categories = categoriesQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return Ok(categories);
+        }
+
+        [HttpGet("{id:int}", Name = "GetCategory")]
+        public ActionResult<Category> Get(int id)
+        {
+            var category = _context.Categories
+                .FirstOrDefault(p => p.Id == id);
+
+            if (category is null)
+            {
+                return NotFound("Category not found. Sorry.");
+            }
+
+            return Ok(category);
+        }
+
+        [HttpPost]
+        public ActionResult<Category> Post([FromBody] Category category)
+        {
+            if (category is null)
+            {
+                return BadRequest(
+                    "Invalid category data provided. What are you doing?"
+                );
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+
+            return new CreatedAtRouteResult("GetCategory",
+                new { id = category.Id }, category);
+        }
+
+        [HttpPut("{id:int}")]
+        public ActionResult<Category> Put(int id, [FromBody] Category category)
+        {
+            if (category is null)
+            {
+                return BadRequest("Invalid category data provided. What are you doing?");
+            }
+
+            if (id != category.Id)
+            {
+                return BadRequest("Category ID mismatch. What are you doing?");
+            }
+
+            bool exists = _context.Categories.Any(p => p.Id == id);
+            if (!exists)
+            {
+                return NotFound("Category not found. Sorry");
+            }
+
+            _context.Entry(category).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(category);
+        }
+
+        [HttpDelete("{id:int}")]
+        public ActionResult<Category> Delete(int id)
+        {
+            var category = _context.Categories
+                .FirstOrDefault(p => p.Id == id);
+
+            if (category is null)
+            {
+                return NotFound("Category not found. Sorry.");
+            }
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+
+            return Ok(category);
+        }
+    }
+}

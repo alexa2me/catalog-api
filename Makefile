@@ -6,9 +6,7 @@
 
 # Runs the project
 run:
-	dotnet run &
-	sleep 2
-	xdg-open http://localhost:5101/swagger
+	dotnet run
 
 # Runs the project in watch mode (automatically recompiles on changes)
 watch:

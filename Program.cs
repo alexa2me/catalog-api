@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using APICatalog.Context;
 
 using Microsoft.EntityFrameworkCore;
@@ -7,16 +9,21 @@ DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers().AddJsonOptions(options => options
+    .JsonSerializerOptions
+    .ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string? mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+string? mySqlConnection = builder
+    .Configuration
+    .GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(mySqlConnection))
 {
-    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' not found.");
 }
 
 // Read and validate required environment variables
@@ -26,13 +33,17 @@ string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
 string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
 if (string.IsNullOrEmpty(dbHost))
-    throw new InvalidOperationException("Environment variable 'DB_HOST' is not set.");
+    throw new InvalidOperationException(
+        "Environment variable 'DB_HOST' is not set.");
 if (string.IsNullOrEmpty(dbName))
-    throw new InvalidOperationException("Environment variable 'DB_NAME' is not set.");
+    throw new InvalidOperationException(
+        "Environment variable 'DB_NAME' is not set.");
 if (string.IsNullOrEmpty(dbUser))
-    throw new InvalidOperationException("Environment variable 'DB_USER' is not set.");
+    throw new InvalidOperationException(
+        "Environment variable 'DB_USER' is not set.");
 if (string.IsNullOrEmpty(dbPassword))
-    throw new InvalidOperationException("Environment variable 'DB_PASSWORD' is not set.");
+    throw new InvalidOperationException(
+        "Environment variable 'DB_PASSWORD' is not set.");
 
 mySqlConnection = mySqlConnection
     .Replace("${DB_HOST}", dbHost)
@@ -41,7 +52,9 @@ mySqlConnection = mySqlConnection
     .Replace("${DB_PASSWORD}", dbPassword);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+    options.UseMySql(
+        mySqlConnection,
+        ServerVersion.AutoDetect(mySqlConnection)));
 
 var app = builder.Build();
 
