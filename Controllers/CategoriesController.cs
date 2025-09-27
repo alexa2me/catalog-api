@@ -64,7 +64,7 @@ namespace APICatalog.Controllers
             if (category is null)
             {
                 return BadRequest(
-                    "Invalid category data. What are you doing?"
+                    "Invalid category data provided. What are you doing?"
                 );
             }
 
@@ -85,7 +85,7 @@ namespace APICatalog.Controllers
         {
             if (category is null)
             {
-                return BadRequest("Invalid category data. What are you doing?");
+                return BadRequest("Invalid category data provided. What are you doing?");
             }
 
             if (id != category.Id)
