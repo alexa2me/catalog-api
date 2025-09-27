@@ -11,6 +11,7 @@ namespace APICatalog.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly AppDbContext _context;
+
         public ProductsController(AppDbContext context)
         {
             _context = context;
@@ -27,7 +28,10 @@ namespace APICatalog.Controllers
             if (pageSize > maxPageSize) pageSize = maxPageSize;
 
             var productsQuery = _context.Products.AsQueryable();
-            var products = productsQuery.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var products = productsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return Ok(products);
         }
@@ -38,17 +42,17 @@ namespace APICatalog.Controllers
             var product = _context.Products.FirstOrDefault(p => p.Id == id);
             if (product is null)
             {
-                return NotFound("Product not found...");
+                return NotFound("Product not found. Sorry.");
             }
             return product;
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] Product product)
+        public ActionResult<Product> Post([FromBody] Product product)
         {
             if (product is null)
             {
-                return BadRequest("Invalid product data.");
+                return BadRequest("Invalid product data. What are you doing?");
             }
 
             if (!ModelState.IsValid)
@@ -56,30 +60,30 @@ namespace APICatalog.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Products.Add(product); // Include the new product in the context
-            _context.SaveChanges(); // Save changes to the database
+            _context.Products.Add(product);
+            _context.SaveChanges();
 
             return new CreatedAtRouteResult("GetProduct",
                 new { id = product.Id }, product);
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult Put(int id, [FromBody] Product product)
+        public ActionResult<Product> Put(int id, [FromBody] Product product)
         {
             if (product is null)
             {
-                return BadRequest("Invalid product data.");
+                return BadRequest("Invalid product data. What are you doing?");
             }
 
             if (id != product.Id)
             {
-                return BadRequest("Product ID mismatch.");
+                return BadRequest("Product ID mismatch. What are you doing?");
             }
 
             bool exists = _context.Products.Any(p => p.Id == id);
             if (!exists)
             {
-                return NotFound("Product not found.");
+                return NotFound("Product not found. Sorry");
             }
 
             _context.Entry(product).State = EntityState.Modified;
@@ -89,13 +93,13 @@ namespace APICatalog.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        public ActionResult<Product> Delete(int id)
         {
             var product = _context.Products.FirstOrDefault(p => p.Id == id);
 
             if (product is null)
             {
-                return NotFound("Product not found...");
+                return NotFound("Product not found. Sorry.");
             }
 
             _context.Products.Remove(product);
