@@ -1,5 +1,6 @@
 using APICatalog.Context;
 using APICatalog.Models;
+using APICatalog.Utils;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -40,9 +41,7 @@ namespace APICatalog.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request." +
-                    " What a shame, isn't it?");
+                return ErrorResultHelper.InternalServerErrorResult(this);
             }
         }
 
@@ -63,9 +62,7 @@ namespace APICatalog.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request." +
-                    " What a shame, isn't it?");
+                return ErrorResultHelper.InternalServerErrorResult(this);
             }
         }
 
@@ -92,9 +89,7 @@ namespace APICatalog.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request." +
-                    " What a shame, isn't it?");
+                return ErrorResultHelper.InternalServerErrorResult(this);
             }
         }
 
@@ -126,9 +121,7 @@ namespace APICatalog.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request." +
-                    " What a shame, isn't it?");
+                return ErrorResultHelper.InternalServerErrorResult(this);
             }
         }
 
@@ -153,9 +146,7 @@ namespace APICatalog.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An error occurred while processing your request." +
-                    " What a shame, isn't it?");
+                return ErrorResultHelper.InternalServerErrorResult(this);
             }
         }
     }
