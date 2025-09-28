@@ -51,7 +51,10 @@ namespace APICatalog.Controllers
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == id);
+                var product = _context.Products
+                .AsNoTracking()
+                .FirstOrDefault(p => p.Id == id);
+
                 if (product is null)
                 {
                     return NotFound($"Product with ID {id} not found. Sorry.");
@@ -134,7 +137,9 @@ namespace APICatalog.Controllers
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == id);
+                var product = _context.Products
+                .AsNoTracking()
+                .FirstOrDefault(p => p.Id == id);
 
                 if (product is null)
                 {
