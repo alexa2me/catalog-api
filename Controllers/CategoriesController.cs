@@ -149,7 +149,6 @@ namespace APICatalog.Controllers
             try
             {
                 var category = _context.Categories
-                .AsNoTracking()
                 .FirstOrDefault(p => p.Id == id);
 
                 if (category is null)
