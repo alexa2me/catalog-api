@@ -22,7 +22,7 @@ namespace APICatalog.Controllers
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {
-            
+
             try
             {
                 const int maxPageSize = 35;
@@ -86,7 +86,7 @@ namespace APICatalog.Controllers
 
                 return new CreatedAtRouteResult("GetProduct",
                     new { id = product.Id }, product);
-                }
+            }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,

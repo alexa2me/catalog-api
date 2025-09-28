@@ -107,7 +107,7 @@ namespace APICatalog.Controllers
                 _context.SaveChanges();
 
                 return new CreatedAtRouteResult("GetCategory",
-                    new { id = category.Id }, category); 
+                    new { id = category.Id }, category);
             }
             catch (Exception)
             {
