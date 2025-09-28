@@ -24,6 +24,8 @@ insert_final_newline = false
 
 #### .NET Coding Conventions ####
 [*.{cs,vb}]
+dotnet_diagnostic.IDE0046.severity = none
+dotnet_style_prefer_conditional_expression_over_return = false:suggestion
 
 # Organize usings
 dotnet_separate_import_directive_groups = true
