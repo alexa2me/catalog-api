@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # avoid shallow clones for a better analysis
+          fetch-depth: 0  # avoid shallow clones for better PR analysis
 
       # Cache SonarCloud packages to speed up builds
       - name: Cache SonarCloud packages
@@ -51,10 +51,10 @@ jobs:
         run: |
           $scannerPath = "${{ runner.temp }}\scanner"
 
-          # Cria diretório do scanner se não existir
+          # Create scanner directory if it does not exist
           New-Item -Path $scannerPath -ItemType Directory
 
-          # Instala/atualiza o scanner
+          # Install or update the scanner tool
           dotnet tool update dotnet-sonarscanner `
             --tool-path $scannerPath
 
@@ -72,7 +72,7 @@ jobs:
       - name: Build, Test and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # allows comments on PRs
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # allows PR comments
         shell: powershell
         run: |
           $scannerPath = "${{ runner.temp }}\scanner\dotnet-sonarscanner"
@@ -82,13 +82,16 @@ jobs:
             /k:"alexa2me_catalog-api" `
             /o:"alexa2me" `
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
-            /d:sonar.pullrequest.github.token="${{ secrets.GITHUB_TOKEN }}"
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.opencover.xml" `
+            /d:sonar.exclusions="**/bin/**;**/obj/**;**/Migrations/**" `
+            /d:sonar.coverage.exclusions="**/Program.cs;**/Startup.cs;**/Migrations/**" `
+            /d:sonar.pullrequest.github.token="${{ secrets.GITHUB_TOKEN }}" `
+            /d:sonar.sourceEncoding="UTF-8"
 
           # Build the project
           dotnet build --configuration Release --no-incremental
 
-          # Tests with coverage
+          # Run tests with coverage
           dotnet test --no-build --configuration Release `
             /p:CollectCoverage=true `
             /p:CoverletOutputFormat=opencover `
