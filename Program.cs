@@ -31,6 +31,7 @@ string? dbHost = Environment.GetEnvironmentVariable("DB_HOST");
 string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
 string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
 string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+string? dbPort = Environment.GetEnvironmentVariable("DB_PORT");
 
 if (string.IsNullOrEmpty(dbHost))
     throw new InvalidOperationException(
@@ -44,12 +45,16 @@ if (string.IsNullOrEmpty(dbUser))
 if (string.IsNullOrEmpty(dbPassword))
     throw new InvalidOperationException(
         "Environment variable 'DB_PASSWORD' is not set.");
+if (string.IsNullOrEmpty(dbPort))
+    throw new InvalidOperationException(
+        "Environment variable 'DB_PORT' is not set.");
 
 mySqlConnection = mySqlConnection
     .Replace("${DB_HOST}", dbHost)
     .Replace("${DB_NAME}", dbName)
     .Replace("${DB_USER}", dbUser)
-    .Replace("${DB_PASSWORD}", dbPassword);
+    .Replace("${DB_PASSWORD}", dbPassword)
+    .Replace("${DB_PORT}", dbPort);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
