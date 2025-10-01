@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github/dependabot.yml" />
     <None Include=".github/pull_request_template.md" />
     <None Include=".github/workflows/sonarcloud.yml" />
   </ItemGroup>
