@@ -19,7 +19,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> Get(
+        public async Task<ActionResult<IEnumerable<Product>>> GetAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {
@@ -32,10 +32,10 @@ namespace APICatalog.Controllers
                 if (pageSize > maxPageSize) pageSize = maxPageSize;
 
                 var productsQuery = _context.Products.AsNoTracking();
-                var products = productsQuery
+                var products = await productsQuery
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
-                    .ToList();
+                    .ToListAsync();
 
                 return Ok(products);
             }
@@ -46,13 +46,13 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetProduct")]
-        public ActionResult<Product> Get(int id)
+        public async Task<ActionResult<Product>> GetAsync(int id)
         {
             try
             {
-                var product = _context.Products
+                var product = await _context.Products
                 .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (product is null)
                 {
@@ -67,7 +67,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Product> Post([FromBody] Product product)
+        public async Task<ActionResult<Product>> PostAsync([FromBody] Product product)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Products.Add(product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new CreatedAtRouteResult("GetProduct",
                     new { id = product.Id }, product);
@@ -94,7 +94,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<Product> Put(int id, [FromBody] Product product)
+        public async Task<ActionResult<Product>> PutAsync(int id, [FromBody] Product product)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Entry(product).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(product);
             }
@@ -126,12 +126,12 @@ namespace APICatalog.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult<Product> Delete(int id)
+        public async Task<ActionResult<Product>> DeleteAsync(int id)
         {
             try
             {
-                var product = _context.Products
-                .FirstOrDefault(p => p.Id == id);
+                var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (product is null)
                 {
@@ -139,7 +139,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Products.Remove(product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(product);
             }

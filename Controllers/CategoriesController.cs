@@ -19,14 +19,14 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet("products")]
-        public ActionResult<IEnumerable<Category>> GetProductsCategories()
+        public async Task<ActionResult<IEnumerable<Category>>> GetProductsCategoriesAsync()
         {
             try
             {
-                return _context.Categories
+                return await _context.Categories
                 .Include(p => p.Products)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
             }
             catch (Exception)
             {
@@ -35,7 +35,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Category>> Get(
+        public async Task<ActionResult<IEnumerable<Category>>> GetAsync(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
         {
@@ -47,10 +47,10 @@ namespace APICatalog.Controllers
                 if (pageSize > maxPageSize) pageSize = maxPageSize;
 
                 var categoriesQuery = _context.Categories.AsNoTracking();
-                var categories = categoriesQuery
+                var categories = await categoriesQuery
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
-                    .ToList();
+                    .ToListAsync();
 
                 return Ok(categories);
             }
@@ -61,13 +61,13 @@ namespace APICatalog.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")]
-        public ActionResult<Category> Get(int id)
+        public async Task<ActionResult<Category>> GetAsync(int id)
         {
             try
             {
-                var category = _context.Categories
+                var category = await _context.Categories
                 .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (category is null)
                 {
@@ -83,7 +83,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Category> Post([FromBody] Category category)
+        public async Task<ActionResult<Category>> PostAsync([FromBody] Category category)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Categories.Add(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new CreatedAtRouteResult("GetCategory",
                     new { id = category.Id }, category);
@@ -112,7 +112,7 @@ namespace APICatalog.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<Category> Put(int id, [FromBody] Category category)
+        public async Task<ActionResult<Category>> PutAsync(int id, [FromBody] Category category)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Entry(category).State = EntityState.Modified;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(category);
             }
@@ -144,12 +144,12 @@ namespace APICatalog.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult<Category> Delete(int id)
+        public async Task<ActionResult<Category>> DeleteAsync(int id)
         {
             try
             {
-                var category = _context.Categories
-                .FirstOrDefault(p => p.Id == id);
+                var category = await _context.Categories
+                .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (category is null)
                 {
@@ -157,7 +157,7 @@ namespace APICatalog.Controllers
                 }
 
                 _context.Categories.Remove(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(category);
             }
