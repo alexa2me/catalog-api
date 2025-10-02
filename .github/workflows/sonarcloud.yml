@@ -70,6 +70,7 @@ jobs:
 
       # Compile, test and send analysis to SonarCloud
       - name: Build, Test and Analyze
+        if: github.actor != 'dependabot[bot]'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # SonarCloud token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # allows PR comments
@@ -81,11 +82,11 @@ jobs:
           & $scannerPath begin `
             /k:"alexa2me_catalog-api" `
             /o:"alexa2me" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.opencover.xml" `
             /d:sonar.exclusions="**/bin/**;**/obj/**;**/Migrations/**" `
             /d:sonar.coverage.exclusions="**/Program.cs;**/Startup.cs;**/Migrations/**" `
-            /d:sonar.pullrequest.github.token="${{ secrets.GITHUB_TOKEN }}" `
+            /d:sonar.pullrequest.github.token="$env:GITHUB_TOKEN" `
             /d:sonar.sourceEncoding="UTF-8"
 
           # Build the project
@@ -99,4 +100,4 @@ jobs:
 
           # Finalize SonarCloud analysis
           & $scannerPath end `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.token="$env:SONAR_TOKEN"
