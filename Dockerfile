@@ -10,14 +10,13 @@ ARG configuration=Release
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
-COPY ["APICatalog/APICatalog/APICatalog.csproj", "APICatalog/"]
-RUN dotnet restore "APICatalog/APICatalog/APICatalog.csproj"
+COPY ["APICatalog.csproj", "."]
+RUN dotnet restore "APICatalog.csproj"
 
 # Copy the rest of the code
 COPY . .
 
 # Build
-WORKDIR "/src/APICatalog/APICatalog"
 RUN dotnet build "APICatalog.csproj" -c $configuration -o /app/build
 
 # Publish
