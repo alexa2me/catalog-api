@@ -14,7 +14,7 @@ public class Product
     public string? Name { get; set; }
 
     [Required]
-    [StringLength(300, MinimumLength = 10, ErrorMessage = "Description must have maximum 300 characters")]
+    [StringLength(300, MinimumLength = 10, ErrorMessage = "Description must be between 10 and 300 characters")]
     public string? Description { get; set; }
 
     [Required]
