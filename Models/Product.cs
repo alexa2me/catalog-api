@@ -10,7 +10,7 @@ public class Product
     [Key]
     public int Id { get; set; }
     [Required]
-    [StringLength(80, MinimumLength = 2, ErrorMessage = "Name must have maximum 80 characters")]
+    [StringLength(80, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 80 characters")]
     public string? Name { get; set; }
 
     [Required]
