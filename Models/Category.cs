@@ -15,11 +15,11 @@ public class Category
     public int Id { get; set; }
 
     [Required]
-    [StringLength(80)]
+    [StringLength(80, MinimumLength = 2, ErrorMessage = "Name must have between 2 and 80 characters")]
     public string? Name { get; set; }
 
     [Required]
-    [StringLength(300)]
+    [StringLength(300, ErrorMessage = "ImageUrl must have maximum 300 characters")]
     public string? ImageUrl { get; set; }
 
     public ICollection<Product>? Products { get; set; }
