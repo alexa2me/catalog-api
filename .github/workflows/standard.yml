@@ -56,25 +56,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Install Railway CLI
-        run: curl -sSL https://railway.app/install.sh | sh
-
-      - name: Login to Railway
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN_STAGING }}
-        run: railway login
-
-      - name: Deploy to Railway (Staging)
-        env:
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          ASPNETCORE_ENVIRONMENT: Staging
-        run: |
-          echo "Deploying to Staging..."
-          dotnet publish -c Release -o ./publish
-          railway up --project 5ffae6e4-7251-474c-aada-2c136be60c08
-          echo "https://catalog-api-staging.up.railway.app"
-          echo "url=https://catalog-api-staging.up.railway.app" >> $GITHUB_OUTPUT
-
   # ------------------------------
   # 3️⃣ Deploy - Production
   # ------------------------------
@@ -93,22 +74,3 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
-      - name: Install Railway CLI
-        run: curl -sSL https://railway.app/install.sh | sh
-
-      - name: Login to Railway
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN_PRODUCTION }}
-        run: railway login
-
-      - name: Deploy to Railway (Production)
-        env:
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          ASPNETCORE_ENVIRONMENT: Production
-        run: |
-          echo "Deploying to Production..."
-          dotnet publish -c Release -o ./publish
-          railway up --project 5ffae6e4-7251-474c-aada-2c136be60c08
-          echo "https://catalog-api-da-ale.up.railway.app"
-          echo "url=https://catalog-api-da-ale.up.railway.app" >> $GITHUB_OUTPUT
