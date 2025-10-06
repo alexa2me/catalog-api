@@ -26,8 +26,8 @@ public class Product
     [Range(1, 10000, ErrorMessage = "Price must be between {1} and {2}")]
     public decimal Price { get; set; }
 
-    [Range(0, int.MaxValue, ErrorMessage = "Inventory must be a positive number or zero")]
-    public int Inventory { get; set; }
+    [Range(0, float.MaxValue, ErrorMessage = "Inventory must be a positive number or zero")]
+    public float Inventory { get; set; }
 
     public DateTime RegistrationDate { get; set; }
 

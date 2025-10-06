@@ -1,0 +1,82 @@
+name: Standard
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - "**/*.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**/*.md"
+  workflow_dispatch:
+
+jobs:
+  # ------------------------------
+  # 1️⃣ CI -Build & Test
+  # ------------------------------
+  ci:
+    name: 🧪 CI - Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+  # ------------------------------
+  # 2️⃣ Deploy - Staging
+  # ------------------------------
+  cd-staging:
+    name: 🚀 CD - Staging
+    needs: ci
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Railway CLI
+        run: curl -sSL https://railway.app/install.sh | sh
+      - name: Deploy to Railway (Staging)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN_STAGING }}
+          RAILWAY_PROJECT_ID: 5ffae6e4-7251-474c-aada-2c136be60c08
+        run: |
+          dotnet publish -c Release -o ./publish
+          railway up --service=ca9134c4-a9d5-414a-b751-ed50a3ec652e
+
+  # ------------------------------
+  # 3️⃣ Deploy - Production
+  # ------------------------------
+  cd-production:
+    name: 🚀 CD - Production
+    if: ${{ success() && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    needs: cd-staging
+    environment:
+      name: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
