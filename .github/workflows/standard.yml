@@ -48,11 +48,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+      - name: Deploy to Railway (Staging)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN_STAGING }}
+        run: |
+          dotnet publish -c Release -o ./publish
+          railway up --project 5ffae6e4-7251-474c-aada-2c136be60c08
 
   # ------------------------------
   # 3️⃣ Deploy - Production
