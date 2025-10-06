@@ -60,7 +60,7 @@ jobs:
           RAILWAY_PROJECT_ID: 5ffae6e4-7251-474c-aada-2c136be60c08
         run: |
           dotnet publish -c Release -o ./publish
-          railway up
+          railway up --service=ca9134c4-a9d5-414a-b751-ed50a3ec652e
 
   # ------------------------------
   # 3️⃣ Deploy - Production
