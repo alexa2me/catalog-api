@@ -41,6 +41,7 @@ jobs:
   # ------------------------------
   cd-staging:
     name: 🚀 CD - Staging
+    if: github.event_name == 'pull_request'
     needs: ci
     runs-on: ubuntu-latest
     environment:
