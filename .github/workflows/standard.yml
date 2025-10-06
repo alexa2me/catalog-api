@@ -59,6 +59,7 @@ jobs:
   # ------------------------------
   cd-production:
     name: 🚀 CD - Production
+    if: ${{ success() && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: cd-staging
     environment:
