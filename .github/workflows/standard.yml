@@ -80,3 +80,12 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
+      - name: Install Railway CLI
+        run: curl -sSL https://railway.app/install.sh | sh
+      - name: Deploy to Railway (Production)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_TOKEN_PRODUCTION }}
+          RAILWAY_PROJECT_ID: 5ffae6e4-7251-474c-aada-2c136be60c08
+        run: |
+          dotnet publish -c Release -o ./publish
+          railway up --service=ca9134c4-a9d5-414a-b751-ed50a3ec652e
