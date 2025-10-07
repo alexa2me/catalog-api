@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -47,7 +47,7 @@ jobs:
       name: staging
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -74,7 +74,7 @@ jobs:
       name: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
