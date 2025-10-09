@@ -8,6 +8,9 @@ DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add health checks
+builder.Services.AddHealthChecks();
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options => options
     .JsonSerializerOptions
@@ -75,5 +78,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/healthcheck");
 
 app.Run();
