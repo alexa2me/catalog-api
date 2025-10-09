@@ -66,6 +66,32 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
+// Protect healthcheck endpoint with token in header
+var healthToken = Environment.GetEnvironmentVariable("HEALTHCHECK_TOKEN");
+
+app.UseWhen(ctx => ctx.Request.Path.Equals("/healthcheck", StringComparison.OrdinalIgnoreCase), branch =>
+    branch.Use(async (ctx, next) =>
+        {
+            // Block if token is not configured in the environment
+            if (string.IsNullOrEmpty(healthToken))
+            {
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await ctx.Response.WriteAsync("Unauthorized: token not configured");
+                return;
+            }
+
+            // Block if the header is not sent or is different
+            var hasHeader = ctx.Request.Headers.TryGetValue("X-Health-Token", out var provided);
+            if (!hasHeader || !string.Equals(provided.ToString(), healthToken, StringComparison.Ordinal))
+            {
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await ctx.Response.WriteAsync("Unauthorized");
+                return;
+            }
+
+            await next();
+        }));
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
