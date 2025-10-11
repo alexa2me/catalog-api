@@ -75,15 +75,15 @@ public class Product : IValidatableObject
                     [nameof(Name)]
                     );
             }
+        }
 
-            if (Inventory < 0)
-            {
-                yield return new
-                    ValidationResult(
-                        "Inventory must be a positive number or zero.",
-                        [nameof(Inventory)]
-                    );
-            }
+        if (Inventory < 0)
+        {
+            yield return new
+                ValidationResult(
+                    "Inventory must be a positive number or zero.",
+                    [nameof(Inventory)]
+                );
         }
     }
 }
