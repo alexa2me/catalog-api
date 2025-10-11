@@ -7,11 +7,6 @@ public class FirstLetterCapitalizedAttribute : ValidationAttribute
     protected override ValidationResult IsValid(object? value,
         ValidationContext validationContext)
     {
-        if (value == null)
-        {
-            return ValidationResult.Success!;
-        }
-
         var strValue = value?.ToString();
         if (string.IsNullOrEmpty(strValue))
         {
@@ -21,7 +16,9 @@ public class FirstLetterCapitalizedAttribute : ValidationAttribute
         var firstLetter = strValue[0].ToString();
         if (firstLetter != firstLetter?.ToUpper())
         {
-            return new ValidationResult("The first letter of the name must be capitalized.");
+            return new ValidationResult(
+                "The first letter of the name must be capitalized."
+            );
         }
 
         return ValidationResult.Success!;
