@@ -31,7 +31,10 @@ namespace APICatalog.Controllers
                 if (pageSize <= 0) pageSize = 10;
                 if (pageSize > maxPageSize) pageSize = maxPageSize;
 
-                var productsQuery = _context.Products.AsNoTracking();
+                var productsQuery = _context.Products
+                    .AsNoTracking()
+                    .OrderBy(product => product.Name);
+
                 var products = await productsQuery
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)

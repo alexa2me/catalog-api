@@ -46,7 +46,10 @@ namespace APICatalog.Controllers
                 if (pageSize <= 0) pageSize = 10;
                 if (pageSize > maxPageSize) pageSize = maxPageSize;
 
-                var categoriesQuery = _context.Categories.AsNoTracking();
+                var categoriesQuery = _context.Categories
+                    .AsNoTracking()
+                    .OrderBy(category => category.Name);
+
                 var categories = await categoriesQuery
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
