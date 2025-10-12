@@ -4,8 +4,6 @@ using APICatalog.Context;
 
 using Microsoft.EntityFrameworkCore;
 
-DotNetEnv.Env.Load();
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add health checks
@@ -30,11 +28,11 @@ if (string.IsNullOrEmpty(mySqlConnection))
 }
 
 // Read and validate required environment variables
-string? dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
-string? dbUser = Environment.GetEnvironmentVariable("DB_USER");
-string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
-string? dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+string? dbHost = builder.Configuration["DB_HOST"];
+string? dbName = builder.Configuration["DB_NAME"];
+string? dbUser = builder.Configuration["DB_USER"];
+string? dbPassword = builder.Configuration["DB_PASSWORD"];
+string? dbPort = builder.Configuration["DB_PORT"];
 
 if (string.IsNullOrEmpty(dbHost))
     throw new InvalidOperationException(

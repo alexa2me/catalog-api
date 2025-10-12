@@ -10,7 +10,7 @@ run:
 
 # Runs the project in watch mode (automatically recompiles on changes)
 watch:
-	dotnet watch run
+	dotnet watch run --launch-profile Development
 
 # Builds the project
 build:
