@@ -4,6 +4,8 @@ using APICatalog.Context;
 
 using Microsoft.EntityFrameworkCore;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add health checks
@@ -27,28 +29,25 @@ if (string.IsNullOrEmpty(mySqlConnection))
         "Connection string 'DefaultConnection' not found.");
 }
 
-// Read and validate required environment variables
-string? dbHost = builder.Configuration["DB_HOST"];
-string? dbName = builder.Configuration["DB_NAME"];
-string? dbUser = builder.Configuration["DB_USER"];
-string? dbPassword = builder.Configuration["DB_PASSWORD"];
-string? dbPort = builder.Configuration["DB_PORT"];
+string GetConfig(string key)
+{
+    var value =
+        builder.Configuration[key]
+        ??
+        Environment.GetEnvironmentVariable(key);
 
-if (string.IsNullOrEmpty(dbHost))
-    throw new InvalidOperationException(
-        "Environment variable 'DB_HOST' is not set.");
-if (string.IsNullOrEmpty(dbName))
-    throw new InvalidOperationException(
-        "Environment variable 'DB_NAME' is not set.");
-if (string.IsNullOrEmpty(dbUser))
-    throw new InvalidOperationException(
-        "Environment variable 'DB_USER' is not set.");
-if (string.IsNullOrEmpty(dbPassword))
-    throw new InvalidOperationException(
-        "Environment variable 'DB_PASSWORD' is not set.");
-if (string.IsNullOrEmpty(dbPort))
-    throw new InvalidOperationException(
-        "Environment variable 'DB_PORT' is not set.");
+    if (value is null)
+        throw new InvalidOperationException(
+            $"Configuration or environment variable '{key}' is not set.");
+    return value;
+}
+
+// Read and validate required environment variables
+string? dbHost = GetConfig("DB_HOST");
+string? dbName = GetConfig("DB_NAME");
+string? dbUser = GetConfig("DB_USER");
+string? dbPassword = GetConfig("DB_PASSWORD");
+string? dbPort = GetConfig("DB_PORT");
 
 mySqlConnection = mySqlConnection
     .Replace("${DB_HOST}", dbHost)
