@@ -21,11 +21,12 @@ public static class ApiExceptionMiddlewareExtensions
 				var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
 				if (contextFeature != null)
 				{
+					var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 					await context.Response.WriteAsync(new ErrorDetails()
 					{
 						StatusCode = context.Response.StatusCode,
 						Message = contextFeature.Error.Message,
-						Trace = contextFeature.Error.StackTrace
+						Trace = env == "Development" ? contextFeature.Error.StackTrace : null
 					}.ToString());
 				}
 			});
